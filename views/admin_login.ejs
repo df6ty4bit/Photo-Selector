@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="center-wrap">
+    <div class="card">
+      <div class="navbar-brand" style="margin-bottom: 22px;">
+        <span class="brand-mark">&#9671;</span>
+        <span class="brand-name">Photo Selector</span>
+      </div>
+      <h1>Welcome back</h1>
+      <p class="muted">Sign in to manage your galleries.</p>
+      <% if (error) { %><p class="error"><%= error %></p><% } %>
+      <form method="POST" action="/admin/login">
+        <input type="password" name="password" placeholder="Password" autofocus required>
+        <button type="submit" style="width:100%;">Log in</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

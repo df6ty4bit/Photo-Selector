@@ -1,0 +1,66 @@
+# ==========================================
+# Logs & Diagnostics
+# ==========================================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ==========================================
+# Runtime Secrets & Environment Variables
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# ==========================================
+# Operating System Trash
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================================
+# Common Editors & IDEs
+# ==========================================
+# VS Code
+.vscode/
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ / WebStorm / PyCharm
+.idea/
+*.iml
+
+# Vim
+*.swp
+*~
+
+# ==========================================
+# Common Dependency & Build Folders (Uncomment as needed)
+# ==========================================
+# Node.js
+# node_modules/
+# dist/
+
+# Python
+# __pycache__/
+# *.pyc
+# .venv/
+# env/
+
+# Java / Maven / Gradle
+# target/
+# .gradle/
+# build/

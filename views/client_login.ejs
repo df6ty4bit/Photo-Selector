@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Your Photos</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="center-wrap">
+    <div class="card">
+      <div class="navbar-brand" style="margin-bottom: 22px;">
+        <span class="brand-mark">&#9671;</span>
+        <span class="brand-name">Photo Selector</span>
+      </div>
+      <h1>View Your Photos</h1>
+      <p class="muted">Enter the code your photographer sent you.</p>
+      <% if (error) { %><p class="error"><%= error %></p><% } %>
+      <form method="POST" action="/login">
+        <input type="text" name="code" placeholder="6-digit code" autofocus required
+               inputmode="numeric" pattern="[0-9]*" maxlength="6">
+        <button type="submit" style="width:100%;">Continue</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

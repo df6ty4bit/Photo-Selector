@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galleries</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar', { greeting, greetName: null, logoutAction: '/admin/logout' }) %>
+
+  <div class="wrap">
+    <div class="top-bar">
+      <div>
+        <h1>Your Galleries</h1>
+        <p class="muted">Create a gallery for each client, then share their code.</p>
+      </div>
+    </div>
+
+    <div class="card wide" style="margin-bottom:28px;">
+      <h3>Create a new gallery</h3>
+      <form method="POST" action="/admin/galleries">
+        <input type="text" name="name" placeholder="Client / shoot name (e.g. Smith Wedding)" required>
+        <button type="submit">Create gallery</button>
+      </form>
+    </div>
+
+    <% if (galleries.length === 0) { %>
+      <p class="muted">No galleries yet. Create one above to get started.</p>
+    <% } %>
+
+    <ul class="gallery-list">
+      <% galleries.forEach(g => { %>
+        <li>
+          <div>
+            <a href="/admin/galleries/<%= g.id %>"><%= g.name %></a><br>
+            <span class="muted">
+              <%= g.photo_count %> photo<%= g.photo_count === 1 ? '' : 's' %>
+              &middot; <%= g.selected_count %> selected
+              &middot; code: <span class="otp-badge"><%= g.otp %></span>
+              <% if (g.submitted_at) { %> &middot; submitted <%= g.submitted_at %><% } %>
+            </span>
+          </div>
+          <a href="/admin/galleries/<%= g.id %>" class="btn btn-sm">Open</a>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+</body>
+</html>

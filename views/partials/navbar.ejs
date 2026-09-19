@@ -1,0 +1,16 @@
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-mark">&#9671;</span>
+    <span class="brand-name">Photo Selector</span>
+  </div>
+  <div class="navbar-right">
+    <% if (typeof greeting !== 'undefined' && greeting) { %>
+      <span class="greeting"><%= greeting %><% if (typeof greetName !== 'undefined' && greetName) { %>, <%= greetName %><% } %></span>
+    <% } %>
+    <% if (typeof logoutAction !== 'undefined' && logoutAction) { %>
+      <form method="POST" action="<%= logoutAction %>">
+        <button type="submit" class="btn btn-ghost btn-sm">Log out</button>
+      </form>
+    <% } %>
+  </div>
+</nav>

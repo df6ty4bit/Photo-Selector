@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= gallery.name %> — Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar', { greeting, greetName: null, logoutAction: '/admin/logout' }) %>
+
+  <div class="wrap">
+    <div class="top-bar">
+      <div>
+        <a href="/admin" class="muted" style="font-size:13px; text-decoration:none;">&larr; All galleries</a>
+        <h1><%= gallery.name %></h1>
+        <p class="muted">
+          Client code: <span class="otp-badge"><%= gallery.otp %></span>
+          <form class="inline" method="POST" action="/admin/galleries/<%= gallery.id %>/regenerate-otp">
+            <button type="submit" class="btn-ghost btn-sm">Regenerate code</button>
+          </form>
+          <br>
+          <% if (gallery.submitted_at) { %>
+            Client last submitted selections on <%= gallery.submitted_at %>
+          <% } else { %>
+            Client hasn't submitted selections yet
+          <% } %>
+        </p>
+      </div>
+      <form method="POST" action="/admin/galleries/<%= gallery.id %>/delete"
+            onsubmit="return confirm('Delete this entire gallery and all its photos? This cannot be undone.');">
+        <button type="submit" class="btn-danger">Delete gallery</button>
+      </form>
+    </div>
+
+    <div class="card wide" style="margin-bottom:28px;">
+      <h3>Upload photos</h3>
+      <form method="POST" action="/admin/galleries/<%= gallery.id %>/photos" enctype="multipart/form-data">
+        <input type="file" name="photos" accept="image/*" multiple required>
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+
+    <h3>
+      Photos (<%= photos.length %>)
+      <span class="muted" style="font-size:14px; font-family:'Inter',sans-serif;">
+        &middot; <%= photos.filter(p => p.selected).length %> selected by client
+      </span>
+    </h3>
+
+    <div class="grid">
+      <% photos.forEach(p => { %>
+        <div class="tile <%= p.selected ? 'selected' : '' %>">
+          <img src="/uploads/<%= gallery.id %>/<%= p.filename %>" alt="<%= p.original_name %>">
+          <div class="tile-footer">
+            <span class="muted"><%= p.selected ? '&#10003; selected' : '' %></span>
+            <form method="POST" action="/admin/galleries/<%= gallery.id %>/photos/<%= p.id %>/delete"
+                  onsubmit="return confirm('Delete this photo?');">
+              <button type="submit" class="btn-danger btn-sm">Delete</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</body>
+</html>

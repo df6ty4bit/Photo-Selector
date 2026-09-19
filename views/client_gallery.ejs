@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= gallery.name %></title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <%- include('partials/navbar', { greeting, greetName: gallery.name, logoutAction: '/logout' }) %>
+
+  <div class="wrap">
+    <div class="top-bar">
+      <div>
+        <h1><%= gallery.name %></h1>
+        <p class="muted">Tap the photos you'd like, then submit your selections.</p>
+      </div>
+    </div>
+
+    <% if (photos.length === 0) { %>
+      <p class="muted">No photos have been uploaded yet. Check back soon.</p>
+    <% } %>
+
+    <div class="grid" id="grid">
+      <% photos.forEach(p => { %>
+        <label class="tile <%= p.selected ? 'selected' : '' %>" data-tile data-id="<%= p.id %>" data-selected="<%= p.selected ? '1' : '0' %>">
+          <% const imgSrc = p.preview_filename
+               ? `/uploads/${gallery.id}/previews/${p.preview_filename}`
+               : `/uploads/${gallery.id}/${p.filename}`; %>
+          <img src="<%= imgSrc %>" alt="<%= p.original_name %>" loading="lazy">
+          <div class="tile-footer">
+            <span class="checkbox-label">
+              <input type="checkbox" data-checkbox <%= p.selected ? 'checked' : '' %>>
+              Select
+            </span>
+          </div>
+        </label>
+      <% }) %>
+    </div>
+
+    <% if (photos.length > 0) { %>
+    <div class="sticky-submit">
+      <span class="muted"><span id="count">0</span> photo(s) selected</span>
+      <button id="submitBtn">Submit Selections</button>
+    </div>
+    <% } %>
+  </div>
+
+  <div class="toast" id="toast">Selections submitted!</div>
+
+  <script>
+    const tiles = Array.from(document.querySelectorAll('[data-tile]'));
+    const countEl = document.getElementById('count');
+    const toast = document.getElementById('toast');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Whether the client has already submitted at least once (server-rendered flag).
+    let hasSubmitted = <%= gallery.submitted_at ? 'true' : 'false' %>;
+
+    function refreshTileStates() {
+      let selectedCount = 0;
+      tiles.forEach(tile => {
+        const checked = tile.querySelector('[data-checkbox]').checked;
+        if (checked) selectedCount++;
+        tile.classList.toggle('selected', checked);
+        tile.classList.toggle('faded', hasSubmitted && !checked);
+      });
+      countEl.textContent = selectedCount;
+    }
+
+    tiles.forEach(tile => {
+      const checkbox = tile.querySelector('[data-checkbox]');
+      checkbox.addEventListener('change', refreshTileStates);
+    });
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', async () => {
+        const selectedIds = tiles
+          .filter(t => t.querySelector('[data-checkbox]').checked)
+          .map(t => t.dataset.id);
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting…';
+
+        try {
+          const res = await fetch('/gallery/select', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ selectedIds }),
+          });
+
+          if (res.ok) {
+            hasSubmitted = true;
+            refreshTileStates();
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+          } else {
+            alert('Something went wrong submitting your selections. Please try again.');
+          }
+        } catch (e) {
+          alert('Could not reach the server. Please check your connection and try again.');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Submit Selections';
+        }
+      });
+    }
+
+    refreshTileStates();
+  </script>
+</body>
+</html>
